@@ -1,6 +1,7 @@
 #include "Mesh.h"
 #include "pg2_indexbuffer.h"
 #include "pg2_vertexbuffer.h"
+#include <string>
 
 #include <d3d9.h>
 #pragma comment (lib, "d3d9.lib")
@@ -22,6 +23,10 @@ void Mesh::getChild(std::string name, Entity3D& child){
 	{
 		child = *this;
 	}
+}
+
+int Mesh::triangles() {
+	return _triang;
 }
 
 void Mesh::updateBV(){
@@ -147,7 +152,8 @@ void Mesh::draw(Renderer& rkRenderer, CollisionResult eParentResult, Frustum& rk
 		rendi.setMatrix(MatrixType::World, _WordtransformationMatrix);
 		rendi.drawCurrentBuffers(primitive);
 
-		_text.setText(_text._text + "\n   +" + getName());
+		_text.setText(_text._text + "\n   +" + getName() + " - triangles: " + std::to_string(_triang));
+		rkRenderer.currentTrianglesRenderer += _triang;
 	}
 }
 

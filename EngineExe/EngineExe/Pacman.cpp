@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include <iostream>
 #include <time.h>
+#include <string>
 //---------------------------------------------------------------------------
 float speedCamera = 0.5f;
 float zoomCamera = 0.5f;
@@ -52,6 +53,7 @@ bool Pacman::init(Renderer& rendi){
 	nodo1->setName("Root");
 	importador = new Importador(rendi);
 	importador->importScene("sample_scene.dae", *nodo1);
+	rendi.totalTriangles = importador->totalTrianglesOnScene;
 	nodo1->setScale(1, 1, 1);
 	nodo1->setRotation(0, 0, 0);
 	nodo1->setPos(0, 0, 0);
@@ -161,6 +163,13 @@ void Pacman::frame(Renderer& renderer, Input& input, Timer& timer){
 	 cube7->draw(renderer, CollisionResult::AllInside, *frustum);
 	 cube8->draw(renderer, CollisionResult::AllInside, *frustum);
 
+
+
+	 std::string trianglesCount = "\nTotal Triangles: " + std::to_string(renderer.totalTriangles) + "\nCurrent Triangles: " 
+								  + std::to_string(renderer.currentTrianglesRenderer) + "\n";
+
+	 _text._text = trianglesCount + _text._text;
 	 _text.draw(renderer);
+	 renderer.currentTrianglesRenderer = 0;
 }
 //---------------------------------------------------------------------------

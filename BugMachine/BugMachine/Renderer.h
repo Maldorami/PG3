@@ -45,6 +45,9 @@ public:
 	float screenDepth;
 	Matrix projectionMatrix;
 
+	int totalTriangles = 0;
+	int currentTrianglesRenderer = 0;
+
 private:
 	VertexBuffer* v_buffer;
 	VertexBuffer* v_bufferS;

@@ -28,9 +28,12 @@ public:
 
 	DLLexport void getChild(std::string name, Entity3D& child);
 
+	DLLexport int triangles();
+
 	IndexBuffer* indexB;
 	VertexBuffer* vertexB;
 
+	int _triang;
 
 private:
 	Renderer rendi;

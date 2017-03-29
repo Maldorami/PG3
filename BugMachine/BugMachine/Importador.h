@@ -11,5 +11,6 @@ public:
 	DLLexport bool importScene(std::string rkFilename, Node& orkSceneRoot);
 	
 	Renderer rendi;
+	int totalTrianglesOnScene;
 };
 #endif IMPORTADOR_H

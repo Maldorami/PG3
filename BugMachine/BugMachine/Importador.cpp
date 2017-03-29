@@ -9,6 +9,7 @@ using namespace std;
 
 #pragma comment (lib, "assimp.lib")
 void getChild(aiNode& node, const aiScene& scene, Node& orkSceneRoot,Renderer& rendi);
+int TotalTriangles = 0;
 
 Importador::Importador(Renderer& rkRenderer)
 :
@@ -21,6 +22,7 @@ bool Importador::importScene(std::string fileName, Node& orkSceneRoot){
 	const aiScene* pScene = Importer.ReadFile(fileName, aiProcess_Triangulate | aiProcess_ConvertToLeftHanded);
 
 	getChild(*pScene->mRootNode, *pScene, orkSceneRoot, rendi);
+	totalTrianglesOnScene = TotalTriangles;
 	return true;
 }
 
@@ -49,6 +51,8 @@ void getChild(aiNode& node, const aiScene& scene, Node& orkSceneRoot, Renderer& 
 			verticesT[i].v = -mesh->mTextureCoords[0][i].y;
 		}
 
+		_mesh->_triang = mesh->mNumFaces;
+		TotalTriangles += _mesh->_triang;
 		_mesh->setMeshData(verticesT, Primitive::TriangleList, mesh->mNumVertices, indices, mesh->mNumFaces * 3);
 
 		_mesh->buildBV();

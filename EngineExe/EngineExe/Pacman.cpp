@@ -52,7 +52,7 @@ bool Pacman::init(Renderer& rendi){
 	nodo1 = new Node();
 	nodo1->setName("Root");
 	importador = new Importador(rendi);
-	importador->importScene("sample_scene.dae", *nodo1);
+	importador->importScene("sample_scene.dae", *nodo1, rendi);
 	rendi.totalTriangles = importador->totalTrianglesOnScene;
 	nodo1->setScale(1, 1, 1);
 	nodo1->setRotation(0, 0, 0);
@@ -60,47 +60,6 @@ bool Pacman::init(Renderer& rendi){
 
 	teapot = new Mesh(rendi);
 	nodo1->getChild("Plano", *teapot);
-
-	cube = new Node();
-	importador = new Importador(rendi);
-	importador->importScene("cube.obj", *cube);
-	cube->setScale(cubeScale, cubeScale, cubeScale);
-
-	cube2 = new Node();
-	importador = new Importador(rendi);
-	importador->importScene("cube.obj", *cube2);
-	cube2->setScale(cubeScale, cubeScale, cubeScale);
-
-	cube3 = new Node();
-	importador = new Importador(rendi);
-	importador->importScene("cube.obj", *cube3);
-	cube3->setScale(cubeScale, cubeScale, cubeScale);
-
-
-	cube4 = new Node();
-	importador = new Importador(rendi);
-	importador->importScene("cube.obj", *cube4);
-	cube4->setScale(cubeScale, cubeScale, cubeScale);
-
-	cube5 = new Node();
-	importador = new Importador(rendi);
-	importador->importScene("cube.obj", *cube5);
-	cube5->setScale(cubeScale, cubeScale, cubeScale);
-
-	cube6 = new Node();
-	importador = new Importador(rendi);
-	importador->importScene("cube.obj", *cube6);
-	cube6->setScale(cubeScale, cubeScale, cubeScale);
-
-	cube7 = new Node();
-	importador = new Importador(rendi);
-	importador->importScene("cube.obj", *cube7);
-	cube7->setScale(cubeScale, cubeScale, cubeScale);
-
-	cube8 = new Node();
-	importador = new Importador(rendi);
-	importador->importScene("cube.obj", *cube8);
-	cube8->setScale(cubeScale, cubeScale, cubeScale);
 
 	frustum = new Frustum(rendi);
 	cam->setFrustum(frustum);
@@ -143,26 +102,6 @@ void Pacman::frame(Renderer& renderer, Input& input, Timer& timer){
 
 	nodo1->updateBV();
 	nodo1->draw(renderer, cam->frustum->CheckCollision(nodo1->BV), *frustum , _text);
-
-	 cube->setPos(nodo1->BV.ActualxMax, nodo1->BV.ActualyMax, nodo1->BV.ActualzMax);
-	cube2->setPos(nodo1->BV.ActualxMin, nodo1->BV.ActualyMin, nodo1->BV.ActualzMax);
-	cube3->setPos(nodo1->BV.ActualxMin, nodo1->BV.ActualyMax, nodo1->BV.ActualzMax);
-	cube4->setPos(nodo1->BV.ActualxMax, nodo1->BV.ActualyMin, nodo1->BV.ActualzMax);
-	cube5->setPos(nodo1->BV.ActualxMax, nodo1->BV.ActualyMax, nodo1->BV.ActualzMin);
-	cube6->setPos(nodo1->BV.ActualxMin, nodo1->BV.ActualyMin, nodo1->BV.ActualzMin);
-	cube7->setPos(nodo1->BV.ActualxMin, nodo1->BV.ActualyMax, nodo1->BV.ActualzMin);
-	cube8->setPos(nodo1->BV.ActualxMax, nodo1->BV.ActualyMin, nodo1->BV.ActualzMin);
-
-
-	  cube->draw(renderer, CollisionResult::AllInside, *frustum);
-	 cube2->draw(renderer, CollisionResult::AllInside, *frustum);
-	 cube3->draw(renderer, CollisionResult::AllInside, *frustum);
-	 cube4->draw(renderer, CollisionResult::AllInside, *frustum);
-	 cube5->draw(renderer, CollisionResult::AllInside, *frustum);
-	 cube6->draw(renderer, CollisionResult::AllInside, *frustum);
-	 cube7->draw(renderer, CollisionResult::AllInside, *frustum);
-	 cube8->draw(renderer, CollisionResult::AllInside, *frustum);
-
 
 
 	 std::string trianglesCount = "\nTotal Triangles: " + std::to_string(renderer.totalTriangles) + "\nCurrent Triangles: " 

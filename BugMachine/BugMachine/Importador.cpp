@@ -12,11 +12,9 @@ void getChild(aiNode& node, const aiScene& scene, Node& orkSceneRoot,Renderer& r
 int TotalTriangles = 0;
 
 Importador::Importador(Renderer& rkRenderer)
-:
-rendi(rkRenderer)
 {}
 
-bool Importador::importScene(std::string fileName, Node& orkSceneRoot){
+bool Importador::importScene(std::string fileName, Node& orkSceneRoot, Renderer& rendi){
 	Assimp::Importer Importer;
 	fileName = "Assets\\" + fileName;
 	const aiScene* pScene = Importer.ReadFile(fileName, aiProcess_Triangulate | aiProcess_ConvertToLeftHanded);

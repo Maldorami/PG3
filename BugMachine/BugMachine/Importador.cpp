@@ -46,7 +46,7 @@ void getChild(aiNode& node, const aiScene& scene, Node& orkSceneRoot, Renderer& 
 			verticesT[i].y = mesh->mVertices[i].y;
 			verticesT[i].z = mesh->mVertices[i].z;
 			verticesT[i].u = mesh->mTextureCoords[0][i].x;
-			verticesT[i].v = -mesh->mTextureCoords[0][i].y;
+			verticesT[i].v = mesh->mTextureCoords[0][i].y;
 		}
 
 		_mesh->_triang = mesh->mNumFaces;
@@ -60,7 +60,18 @@ void getChild(aiNode& node, const aiScene& scene, Node& orkSceneRoot, Renderer& 
 		node.mTransformation.Decompose(scale, rotation, position);
 		_mesh->setPos(position.x, position.y, position.z);
 		_mesh->setScale(scale.x, scale.y, scale.z);
-		_mesh->setRotation(rotation.x, rotation.y, rotation.z);
+		//_mesh->setRotation(rotation.x, rotation.y, rotation.z);
+
+		double ysqr = rotation.y * rotation.y;
+		double t0 = +2.0 * (rotation.w * rotation.x + rotation.y * rotation.z);
+		double t1 = +1.0 - 2.0 * (rotation.x * rotation.x + ysqr);
+		double t2 = +2.0 * (rotation.w * rotation.y - rotation.z * rotation.x);
+		t2 = t2 > 1.0 ? 1.0 : t2;
+		t2 = t2 < -1.0 ? -1.0 : t2;
+		double t3 = +2.0 * (rotation.w * rotation.z + rotation.x * rotation.y);
+		double t4 = +1.0 - 2.0 * (ysqr + rotation.z * rotation.z);
+		_mesh->setRotation(std::atan2(t0, t1), std::asin(t2), std::atan2(t3, t4));
+
 		_mesh->updateBV();
 
 		aiString path;

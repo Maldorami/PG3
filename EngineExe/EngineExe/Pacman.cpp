@@ -48,15 +48,17 @@ bool Pacman::init(Renderer& rendi){
 	cam->setRender(rendi);
 	cam->update();
 	///////////////////////////////	
+	bsp = new bsp_plane();
+	bsp->bsp_ConstructPlane();
 
 	nodo1 = new Node();
 	nodo1->setName("Root");
 	importador = new Importador(rendi);
 	importador->importScene("bspTest.obj", *nodo1, rendi);
 	rendi.totalTriangles = importador->totalTrianglesOnScene;
-	nodo1->setScale(100, 100, 100);
+	nodo1->setScale(50, 50, 50);
 	nodo1->setRotation(0, 0, 0);
-	nodo1->setPos(0, -100, 1000);
+	nodo1->setPos(0, -100, 0);
 
 	teapot = new Mesh(rendi);
 	nodo1->getChild("Plano", *teapot);
@@ -101,8 +103,8 @@ void Pacman::frame(Renderer& renderer, Input& input, Timer& timer){
 	cam->updateFrustum();
 
 	nodo1->updateBV();
+	nodo1->Check_bsp(bsp, cam);
 	nodo1->draw(renderer, cam->frustum->CheckCollision(nodo1->BV), *frustum , _text);
-
 
 	 std::string trianglesCount = "\nTotal Triangles: " + std::to_string(renderer.totalTriangles) + "\nCurrent Triangles: " 
 								  + std::to_string(renderer.currentTrianglesRenderer) + "\n";

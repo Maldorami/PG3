@@ -11,6 +11,11 @@ public:
 	DLLexport void AddChild(Entity3D* child);
 	DLLexport void draw(Renderer& rkRenderer, CollisionResult eParentResult, Frustum& rkFrustum);
 	DLLexport void draw(Renderer& rkRenderer, CollisionResult eParentResult, Frustum& rkFrustum, Text& _text);
+
+	DLLexport void Check_bsp(bsp_plane* plane, Camera* cam);
+	DLLexport void UpdateDrawValue();
+
+
 	DLLexport void updateWordTransformation();
 	DLLexport void removeChild(Entity3D* pkChild);
 	DLLexport void updateBV();

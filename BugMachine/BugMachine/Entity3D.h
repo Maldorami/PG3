@@ -1,12 +1,15 @@
 #ifndef ENTITY3D_H
 #define ENTITY3D_H
 
+#include "bsp_plane.h"
 #include "pg1_timer.h"
 #include "Frustum.h"
 #include "Text.h"
 
 class Node;
 class Mesh;
+class bsp_plane;
+class Camera;
 
 #define DLLexport __declspec(dllexport)
 
@@ -32,6 +35,10 @@ public:
 	DLLexport virtual void draw(Renderer& rkRenderer, CollisionResult eParentResult, Frustum& rkFrustum) = 0;
 	DLLexport virtual void draw(Renderer& rkRenderer, CollisionResult eParentResult, Frustum& rkFrustum, Text& _text) = 0;
 
+	DLLexport virtual void Check_bsp(bsp_plane* plane, Camera* cam) = 0;
+	DLLexport virtual void UpdateDrawValue() = 0;
+
+
 	DLLexport virtual void getChild(std::string name, Entity3D& child) = 0;
 
 	DLLexport void setParent(Node& parent);
@@ -42,6 +49,8 @@ public:
 
 	Node* _parent;
 	AABB BV;
+
+	bool canDraw;
 
 public:
 	DLLexport const AABB& getAABB() const;

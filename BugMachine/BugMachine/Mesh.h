@@ -30,6 +30,9 @@ public:
 
 	DLLexport int triangles();
 
+	DLLexport void Check_bsp(bsp_plane* plane, Camera* cam);
+	DLLexport void UpdateDrawValue();
+
 	IndexBuffer* indexB;
 	VertexBuffer* vertexB;
 

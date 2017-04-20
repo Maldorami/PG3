@@ -54,6 +54,10 @@ void Camera::update(){
 
 	// Setear la transformacion
 	render->d3ddev->SetTransform(D3DTS_VIEW, _localView);
+
+	posX = _pos->x;
+	posY = _pos->y;
+	posZ = _pos->z;
 }
 void Camera::roll(float angle){
 

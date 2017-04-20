@@ -8,6 +8,7 @@
 #include "Mesh.h"
 #include "Importador.h"
 #include "Node.h"
+#include "bsp_plane.h"
 
 #define DLLexport __declspec(dllexport)
 

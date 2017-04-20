@@ -53,23 +53,26 @@ void Node::updateBV(){
 }
 
 void Node::draw(Renderer& rkRenderer, CollisionResult eParentResult, Frustum& rkFrustum){
+	// el BSP decide si es o no dibujable
+		updateWordTransformation();
 
-	updateWordTransformation();
-	std::vector<Entity3D*>::iterator it;
-	if (eParentResult != AllOutside)
-	{
-		if (eParentResult == AllInside)
+	if (canDraw) {
+		std::vector<Entity3D*>::iterator it;
+		if (eParentResult != AllOutside)
 		{
-			for (it = _childs.begin(); it != _childs.end(); it++){
-				(*it)->draw(rkRenderer, eParentResult, rkFrustum);
-			}
-		}
-		else
-		{
-			if (rkFrustum.CheckCollision(BV) != AllOutside)
+			if (eParentResult == AllInside)
 			{
-				for (it = _childs.begin(); it != _childs.end(); it++){
-					(*it)->draw(rkRenderer, rkFrustum.CheckCollision(BV), rkFrustum);
+				for (it = _childs.begin(); it != _childs.end(); it++) {
+					(*it)->draw(rkRenderer, eParentResult, rkFrustum);
+				}
+			}
+			else
+			{
+				if (rkFrustum.CheckCollision(BV) != AllOutside)
+				{
+					for (it = _childs.begin(); it != _childs.end(); it++) {
+						(*it)->draw(rkRenderer, rkFrustum.CheckCollision(BV), rkFrustum);
+					}
 				}
 			}
 		}
@@ -79,24 +82,26 @@ void Node::draw(Renderer& rkRenderer, CollisionResult eParentResult, Frustum& rk
 void Node::draw(Renderer& rkRenderer, CollisionResult eParentResult, Frustum& rkFrustum, Text& _text){
 
 	updateWordTransformation();
-
-	std::vector<Entity3D*>::iterator it;
-	if (eParentResult != AllOutside)
-	{
-		if (eParentResult == AllInside)
+	// el BSP decide si es o no dibujable
+	if (canDraw) {
+		std::vector<Entity3D*>::iterator it;
+		if (eParentResult != AllOutside)
 		{
-			_text.setText(_text._text + "\n" + getName() + " (AllInside) ");
-			for (it = _childs.begin(); it != _childs.end(); it++){
-				(*it)->draw(rkRenderer, eParentResult, rkFrustum, _text);
-			}
-		}
-		else
-		{
-			if (rkFrustum.CheckCollision(BV) != AllOutside)
+			if (eParentResult == AllInside)
 			{
-				_text.setText(_text._text + "\n" + getName() + " (Partially) ");
-				for (it = _childs.begin(); it != _childs.end(); it++){
-					(*it)->draw(rkRenderer, rkFrustum.CheckCollision(BV), rkFrustum, _text);
+				_text.setText(_text._text + "\n" + getName() + " (AllInside) ");
+				for (it = _childs.begin(); it != _childs.end(); it++) {
+					(*it)->draw(rkRenderer, eParentResult, rkFrustum, _text);
+				}
+			}
+			else
+			{
+				if (rkFrustum.CheckCollision(BV) != AllOutside)
+				{
+					_text.setText(_text._text + "\n" + getName() + " (Partially) ");
+					for (it = _childs.begin(); it != _childs.end(); it++) {
+						(*it)->draw(rkRenderer, rkFrustum.CheckCollision(BV), rkFrustum, _text);
+					}
 				}
 			}
 		}
@@ -124,5 +129,21 @@ void Node::removeChild(Entity3D* child){
 	if (it != _childs.end()){
 		child->_parent = NULL;
 		_childs.erase(it);
+	}
+}
+
+void Node::UpdateDrawValue() {
+	canDraw = true;
+	std::vector<Entity3D*>::iterator it;
+	for (it = _childs.begin(); it != _childs.end(); it++) {
+		(*it)->UpdateDrawValue();
+	}
+}
+void Node::Check_bsp(bsp_plane* plane, Camera* cam) {
+	UpdateDrawValue();
+	plane->bsp_DoBSP(*this, cam);
+	std::vector<Entity3D*>::iterator it;
+	for (it = _childs.begin(); it != _childs.end(); it++) {
+		(*it)->Check_bsp(plane, cam);
 	}
 }

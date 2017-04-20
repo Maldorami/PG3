@@ -16,6 +16,7 @@ _scaleX(1.0f),
 _scaleY(1.0f),
 _scaleZ(1.0f),
 _flipX(false),
+canDraw(true),
 _parent(NULL),
 _WordtransformationMatrix(new D3DXMATRIX()),
 _LocaltransformationMatrix(new D3DXMATRIX())

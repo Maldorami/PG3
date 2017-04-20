@@ -10,15 +10,15 @@
 #pragma comment (lib, "d3dx9.lib")
 
 Mesh::Mesh(Renderer& rkRenderer)
-:
-indexB(NULL),
-vertexB(NULL),
-_vertices(NULL),
-rendi(rkRenderer)
+	:
+	indexB(NULL),
+	vertexB(NULL),
+	_vertices(NULL),
+	rendi(rkRenderer)
 {}
 using namespace std;
 
-void Mesh::getChild(std::string name, Entity3D& child){
+void Mesh::getChild(std::string name, Entity3D& child) {
 	if (name == getName())
 	{
 		child = *this;
@@ -29,7 +29,7 @@ int Mesh::triangles() {
 	return _triang;
 }
 
-void Mesh::updateBV(){
+void Mesh::updateBV() {
 
 	D3DXVECTOR3* wordScale = new D3DXVECTOR3();
 	D3DXQUATERNION* wordRotation = new D3DXQUATERNION();
@@ -58,7 +58,7 @@ void Mesh::updateBV(){
 	delete wordTranslation;
 }
 
-void Mesh::buildBV(){
+void Mesh::buildBV() {
 
 	////AABB Values
 	float xMin = 0, xMax = 0;
@@ -135,36 +135,49 @@ void Mesh::setMeshData(const CustomVertexZ* pakVertices, Primitive ePrimitive,
 	primitive = ePrimitive;
 }
 
-void Mesh::draw(Renderer& rkRenderer, CollisionResult eParentResult, Frustum& rkFrustum){
-	if (eParentResult != AllOutside)
-	{
-		rendi.setCurrentTexture(_texture);
-		rendi.setMatrix(MatrixType::World, _WordtransformationMatrix);
-		rendi.drawCurrentBuffers(primitive);
+void Mesh::draw(Renderer& rkRenderer, CollisionResult eParentResult, Frustum& rkFrustum) {
+	// el BSP decide si es o no dibujable
+	if (canDraw) {
+		if (eParentResult != AllOutside)
+		{
+			rendi.setCurrentTexture(_texture);
+			rendi.setMatrix(MatrixType::World, _WordtransformationMatrix);
+			rendi.drawCurrentBuffers(primitive);
+		}
 	}
 }
 
-void Mesh::draw(Renderer& rkRenderer, CollisionResult eParentResult, Frustum& rkFrustum, Text& _text){
+void Mesh::draw(Renderer& rkRenderer, CollisionResult eParentResult, Frustum& rkFrustum, Text& _text) {
+	// el BSP decide si es o no dibujable 
+	if (canDraw) {
+		if (eParentResult != AllOutside)
+		{
+			rendi.setCurrentTexture(_texture);
+			rendi.setMatrix(MatrixType::World, _WordtransformationMatrix);
+			rendi.drawCurrentBuffers(primitive);
 
-	if (eParentResult != AllOutside)
-	{
-		rendi.setCurrentTexture(_texture);
-		rendi.setMatrix(MatrixType::World, _WordtransformationMatrix);
-		rendi.drawCurrentBuffers(primitive);
-
-		_text.setText(_text._text + "\n   +" + getName() + " - triangles: " + std::to_string(_triang));
-		rkRenderer.currentTrianglesRenderer += _triang;
+			_text.setText(_text._text + "\n   +" + getName() + " - triangles: " + std::to_string(_triang));
+			rkRenderer.currentTrianglesRenderer += _triang;
+		}
 	}
 }
 
-void Mesh::setTextureId(Texture texturrah){
+void Mesh::setTextureId(Texture texturrah) {
 	_texture = texturrah;
 }
 
-Mesh::~Mesh(){
+Mesh::~Mesh() {
 	delete indexB;
 	delete vertexB;
 
 	indexB = NULL;
 	vertexB = NULL;
+}
+
+void Mesh::UpdateDrawValue() {
+	canDraw = true;
+}
+void Mesh::Check_bsp(bsp_plane* plane, Camera* cam) {
+	UpdateDrawValue();
+	plane->bsp_DoBSP(*this, cam);
 }

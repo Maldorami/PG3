@@ -9,7 +9,6 @@ public:
 	void deinit(){};
 
 private:
-	bsp_plane* bsp;
 	Camera* cam;
 	Node* nodo1;
 	Frustum* frustum;

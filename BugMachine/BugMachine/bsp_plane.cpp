@@ -44,13 +44,8 @@ void bsp_plane::bsp_ConstructPlane(D3DXVECTOR3* poss, D3DXVECTOR3* dir) {
 	D3DXPlaneFromPointNormal(m_plane, poss, dir);
 }
 
-void bsp_plane::Update() {
-	D3DXVECTOR3* point = new D3DXVECTOR3();	
-	point->x = mesh->BV.pivot.x;
-	point->y = mesh->BV.pivot.y;
-	point->z = mesh->BV.pivot.z;
-
-	D3DXPlaneFromPointNormal(m_plane, point, _dir);
+void bsp_plane::bsp_ConstructPlane(D3DXVECTOR3* v1, D3DXVECTOR3* v2, D3DXVECTOR3* v3) {
+	D3DXPlaneFromPoints(m_plane, v1, v2, v3);
 }
 
 void bsp_plane::bsp_DoBSP(Entity3D& entity, Camera* cam) {

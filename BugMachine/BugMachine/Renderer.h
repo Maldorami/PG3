@@ -17,6 +17,7 @@ typedef ID3DXFont* Font;
 class IndexBuffer;
 class VertexBuffer;
 class bsp_plane;
+class Mesh;
 
 #define DLLexport __declspec(dllexport)
 class Renderer{
@@ -49,7 +50,11 @@ public:
 	int totalTriangles = 0;
 	int currentTrianglesRenderer = 0;
 
+	DLLexport void AddPlane();
+	DLLexport void UpdateBSPMeshes(float scaleX, float scaleY, float scaleZ);
+	DLLexport void UpdatePlanes();
 	std::vector<bsp_plane*> bsp_Planes;
+	std::vector<Mesh*> bsp_mesh;
 
 private:
 	VertexBuffer* v_buffer;

@@ -58,6 +58,9 @@ bool Pacman::init(Renderer& rendi){
 	nodo1->setRotation(0, 0, 0);
 	nodo1->setPos(0, 0, 0);
 
+	rendi.AddPlane();
+	
+
 	teapot = new Mesh(rendi);
 	nodo1->getChild("Plano", *teapot);
 
@@ -104,14 +107,14 @@ void Pacman::frame(Renderer& renderer, Input& input, Timer& timer){
 
 	nodo1->updateBV();
 	
-	std::vector<bsp_plane*>::iterator it;
-	for (it = renderer.bsp_Planes.begin(); it != renderer.bsp_Planes.end(); it++) {
-		(*it)->Update();
-	}
+	renderer.UpdatePlanes();
 
+	std::vector<bsp_plane*>::iterator it;
 	for (it = renderer.bsp_Planes.begin(); it != renderer.bsp_Planes.end(); it++) {
 		nodo1->Check_bsp((*it), cam);
 	}
+
+
 	nodo1->draw(renderer, cam->frustum->CheckCollision(nodo1->BV), *frustum , _text);
 
 	 std::string trianglesCount = "\nTotal Triangles: " + std::to_string(renderer.totalTriangles) + "\nCurrent Triangles: " 

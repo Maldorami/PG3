@@ -1,6 +1,8 @@
 #include"Renderer.h"
 #include "pg2_vertexbuffer.h"
 #include "pg2_indexbuffer.h"
+#include "bsp_plane.h"
+#include "Mesh.h"
 //---------------------------------------------------------------------------
 #include <d3d9.h>
 #pragma comment (lib, "d3d9.lib")
@@ -173,3 +175,117 @@ void Renderer::drawText(ID3DXFont* _Font, std::string& _text, RECT& _rect){
 	_Font->DrawTextA(NULL, _text.c_str(), -1, &_rect, DT_LEFT, D3DCOLOR_XRGB(255, 255, 255));
 }
 //---------------------------------------------------------------------------
+void Renderer::AddPlane() {
+	std::vector<Mesh*>::iterator it;
+	for (it = bsp_mesh.begin(); it != bsp_mesh.end(); it++) {
+		bsp_plane* plane = new bsp_plane();
+
+		D3DXVECTOR3 v1;
+		D3DXVECTOR3 v2;
+		D3DXVECTOR3 v3;
+
+		if ((*it)->BV.xMin == (*it)->BV.xMax) {
+			v1.x = (*it)->BV.xMin;
+			v1.y = (*it)->BV.yMin;
+			v1.z = (*it)->BV.zMin;
+			
+			v2.x = (*it)->BV.xMin;
+			v2.y = (*it)->BV.yMax;
+			v2.z = (*it)->BV.zMin;
+			
+			v3.x = (*it)->BV.xMin;
+			v3.y = (*it)->BV.yMin;
+			v3.z = (*it)->BV.zMax;			
+		}
+		else
+			if ((*it)->BV.zMin == (*it)->BV.zMax) {
+				v1.x = (*it)->BV.xMin;
+				v1.y = (*it)->BV.yMin;
+				v1.z = (*it)->BV.zMin;
+
+				v2.x = (*it)->BV.xMax;
+				v2.y = (*it)->BV.yMin;
+				v2.z = (*it)->BV.zMin;
+
+				v3.x = (*it)->BV.xMin;
+				v3.y = (*it)->BV.yMax;
+				v3.z = (*it)->BV.zMin;
+			}
+			else
+				if ((*it)->BV.yMin == (*it)->BV.yMax) {
+					v1.x = (*it)->BV.xMin;
+					v1.y = (*it)->BV.yMin;
+					v1.z = (*it)->BV.zMin;
+
+					v2.x = (*it)->BV.xMin;
+					v2.y = (*it)->BV.yMin;
+					v2.z = (*it)->BV.zMax;
+
+					v3.x = (*it)->BV.xMax;
+					v3.y = (*it)->BV.yMin;
+					v3.z = (*it)->BV.zMin;
+				}
+
+		plane->bsp_ConstructPlane(&v1, &v2, &v3);
+		bsp_Planes.push_back(plane);
+	}
+}
+//---------------------------------------------------------------------------
+void Renderer::UpdatePlanes() {
+
+	for (int i = 0; i < bsp_Planes.size(); i++) {
+		D3DXVECTOR3* v1 = new D3DXVECTOR3();
+		D3DXVECTOR3* v2 = new D3DXVECTOR3();
+		D3DXVECTOR3* v3 = new D3DXVECTOR3();
+
+		if (bsp_mesh[i]->BV.ActualxMin == bsp_mesh[i]->BV.ActualxMax) {
+			v1->x = bsp_mesh[i]->BV.ActualxMin;
+			v1->y = bsp_mesh[i]->BV.ActualyMin;
+			v1->z = bsp_mesh[i]->BV.ActualzMin;
+			  
+			v2->x = bsp_mesh[i]->BV.ActualxMin;
+			v2->y = bsp_mesh[i]->BV.ActualyMax;
+			v2->z = bsp_mesh[i]->BV.ActualzMin;
+			  
+			v3->x = bsp_mesh[i]->BV.ActualxMin;
+			v3->y = bsp_mesh[i]->BV.ActualyMin;
+			v3->z = bsp_mesh[i]->BV.ActualzMax;
+		}
+		else
+			if (bsp_mesh[i]->BV.ActualzMin == bsp_mesh[i]->BV.ActualzMax) {
+				v1->x = bsp_mesh[i]->BV.ActualxMin;
+				v1->y = bsp_mesh[i]->BV.ActualyMin;
+				v1->z = bsp_mesh[i]->BV.ActualzMin;
+				  
+				v2->x = bsp_mesh[i]->BV.ActualxMax;
+				v2->y = bsp_mesh[i]->BV.ActualyMin;
+				v2->z = bsp_mesh[i]->BV.ActualzMin;
+				  
+				v3->x = bsp_mesh[i]->BV.ActualxMin;
+				v3->y = bsp_mesh[i]->BV.ActualyMax;
+				v3->z = bsp_mesh[i]->BV.ActualzMin;
+			}
+			else
+				if (bsp_mesh[i]->BV.yMin == bsp_mesh[i]->BV.yMax) {
+					v1->x = bsp_mesh[i]->BV.ActualxMin;
+					v1->y = bsp_mesh[i]->BV.ActualyMin;
+					v1->z = bsp_mesh[i]->BV.ActualzMin;
+					  
+					v2->x = bsp_mesh[i]->BV.ActualxMin;
+					v2->y = bsp_mesh[i]->BV.ActualyMin;
+					v2->z = bsp_mesh[i]->BV.ActualzMax;
+					  
+					v3->x = bsp_mesh[i]->BV.ActualxMax;
+					v3->y = bsp_mesh[i]->BV.ActualyMin;
+					v3->z = bsp_mesh[i]->BV.ActualzMin;
+				}
+
+		D3DXPlaneFromPoints(bsp_Planes[i]->m_plane, v1, v2, v3);
+	}
+}
+
+void Renderer::UpdateBSPMeshes(float scaleX, float scaleY, float scaleZ) {
+	for (int i = 0; i < bsp_mesh.size(); i++) {
+		bsp_mesh[i]->updateBV();
+	}
+}

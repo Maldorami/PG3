@@ -81,58 +81,6 @@ void getChild(aiNode& node, const aiScene& scene, Node& orkSceneRoot, Renderer& 
 
 		_mesh->updateBV();
 
-
-		if (!_mesh->getName().find("bsp_")) {
-
-			bsp_plane* plane = new bsp_plane();
-
-			/*D3DXVECTOR3 v1;
-			v1.x = verticesT[0].x + _mesh->posX();
-			v1.y = verticesT[0].y + _mesh->posY();
-			v1.z = verticesT[0].z + _mesh->posZ();
-			D3DXVECTOR3 v2;
-			v2.x = verticesT[1].x + _mesh->posX();
-			v2.y = verticesT[1].y + _mesh->posY();
-			v2.z = verticesT[1].z + _mesh->posZ();
-			D3DXVECTOR3 v3;
-			v3.x = verticesT[2].x + _mesh->posX();
-			v3.y = verticesT[2].y + _mesh->posY();
-			v3.z = verticesT[2].z + _mesh->posZ();*/
-
-			D3DXVECTOR3* point = new D3DXVECTOR3();
-			D3DXVECTOR3* direction = new D3DXVECTOR3();
-
-			point->x = _mesh->posX();
-			point->y = _mesh->posY();
-			point->z = _mesh->posZ();
-
-
-			if (_mesh->BV.xMin == _mesh->BV.xMax) {
-				direction->x = 1;
-				direction->y = 0;
-				direction->z = 0;
-			}
-			else 
-				if (_mesh->BV.zMin == _mesh->BV.zMax) {
-				direction->x = 0;
-				direction->y = 0;
-				direction->z = 1;
-			}
-			else
-				if (_mesh->BV.yMin == _mesh->BV.yMax) {
-					direction->x = 0;
-					direction->y = 1;
-					direction->z = 0;
-				}
-
-
-			plane->bsp_ConstructPlane(point, direction);
-			plane->_dir = direction;
-			plane->mesh = _mesh;
-			plane->Update();
-			rendi.bsp_Planes.push_back(plane);
-		}
-
 		aiString path;
 		if (scene.mMaterials[mesh->mMaterialIndex]->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS){
 
@@ -162,6 +110,9 @@ void getChild(aiNode& node, const aiScene& scene, Node& orkSceneRoot, Renderer& 
 		}
 
 		orkSceneRoot.AddChild(_mesh);
+		if (!_mesh->getName().find("bsp_")) {
+			rendi.bsp_mesh.push_back(_mesh);
+		}
 		}
 
 		if (node.mNumChildren > 0)

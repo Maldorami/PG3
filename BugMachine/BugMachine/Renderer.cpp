@@ -233,7 +233,7 @@ void Renderer::AddPlane() {
 //---------------------------------------------------------------------------
 void Renderer::UpdatePlanes() {
 
-	for (int i = 0; i < bsp_Planes.size(); i++) {
+	for (unsigned i = 0; i < bsp_Planes.size(); i++) {
 		D3DXVECTOR3* v1 = new D3DXVECTOR3();
 		D3DXVECTOR3* v2 = new D3DXVECTOR3();
 		D3DXVECTOR3* v3 = new D3DXVECTOR3();
@@ -285,7 +285,7 @@ void Renderer::UpdatePlanes() {
 }
 
 void Renderer::UpdateBSPMeshes(float scaleX, float scaleY, float scaleZ) {
-	for (int i = 0; i < bsp_mesh.size(); i++) {
+	for (unsigned i = 0; i < bsp_mesh.size(); i++) {
 		bsp_mesh[i]->updateBV();
 	}
 }

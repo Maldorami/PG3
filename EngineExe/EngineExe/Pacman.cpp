@@ -16,12 +16,12 @@ void cameraControll(Input& input, Timer& timer, Camera* cam) {
 	if (input.keyDown(input.KEY_S)){
 		cam->walk(-zoomCamera* timer.timeBetweenFrames());
 	}
-	if (input.keyDown(input.KEY_Q)){
-		cam->roll(rotationCamera* timer.timeBetweenFrames());
-	}
-	if (input.keyDown(input.KEY_E)){
-		cam->roll(-rotationCamera* timer.timeBetweenFrames());
-	}
+	//if (input.keyDown(input.KEY_Q)){
+	//	cam->roll(rotationCamera* timer.timeBetweenFrames());
+	//}
+	//if (input.keyDown(input.KEY_E)){
+	//	cam->roll(-rotationCamera* timer.timeBetweenFrames());
+	//}
 	if (input.keyDown(input.KEY_D)){
 		cam->strafe(speedCamera* timer.timeBetweenFrames());
 	}
@@ -62,7 +62,7 @@ bool Pacman::init(Renderer& rendi){
 	
 
 	teapot = new Mesh(rendi);
-	nodo1->getChild("Plano", *teapot);
+	nodo1->getChild("Sphere", *teapot);
 
 	frustum = new Frustum(rendi);
 	cam->setFrustum(frustum);
@@ -70,6 +70,7 @@ bool Pacman::init(Renderer& rendi){
 	
 
 	_text.createText(0, -20, 1000, 1000, 20, "Arial","asdasdasd", rendi);
+	showWalls = true;
 	return true;
 }
 //---------------------------------------------------------------------------
@@ -79,22 +80,25 @@ void Pacman::frame(Renderer& renderer, Input& input, Timer& timer){
 	float ScaleModif = 0.1f * timer.timeBetweenFrames();
 	float PosModif = 1.0f * timer.timeBetweenFrames();
 
-	_text.setText("");
+	if (showWalls) {
+		_text.setText("ShowWalls = true");
+	}
+	else
+	{
+		_text.setText("ShowWalls = false");
 
+	}
+
+	// Mostrar o no los planes bsp
+	if (input.keyDown(input.KEY_C)) {
+		showWalls = !showWalls;
+	}
 	// Modificar traslacion Teapot
-	if (input.keyDown(input.KEY_LEFT)) teapot->setPos(teapot->posX() - ScaleModif, teapot->posY(), teapot->posZ());
-	if (input.keyDown(input.KEY_RIGHT))teapot->setPos(teapot->posX() + ScaleModif, teapot->posY(), teapot->posZ());
+	if (input.keyDown(input.KEY_LEFT)) teapot->setPos(teapot->posX(), teapot->posY(), teapot->posZ() + ScaleModif);
+	if (input.keyDown(input.KEY_RIGHT))teapot->setPos(teapot->posX(), teapot->posY(), teapot->posZ() - ScaleModif);
 	// Modificar escala Teapot
-	if (input.keyDown(input.KEY_UP))   teapot->setScale(teapot->scaleX(), teapot->scaleY() + RotModif, teapot->scaleZ());
-	if (input.keyDown(input.KEY_DOWN)) teapot->setScale(teapot->scaleX(), teapot->scaleY() - RotModif, teapot->scaleZ());
-	// Modificar escala nodo1: K y L
-	if (input.keyDown(input.KEY_K)) nodo1->setScale(nodo1->scaleX() + ScaleModif, nodo1->scaleY() + ScaleModif, nodo1->scaleZ() + ScaleModif);
-	if (input.keyDown(input.KEY_L)) nodo1->setScale(nodo1->scaleX() - ScaleModif, nodo1->scaleY() - ScaleModif, nodo1->scaleZ() - ScaleModif);
-	// Modificar traslacion nodo1: YGHJ
-	if (input.keyDown(input.KEY_Y)) nodo1->setPos(nodo1->posX(),			nodo1->posY() + PosModif, nodo1->posZ());
-	if (input.keyDown(input.KEY_H)) nodo1->setPos(nodo1->posX(),			nodo1->posY() - PosModif, nodo1->posZ());
-	if (input.keyDown(input.KEY_G)) nodo1->setPos(nodo1->posX() - PosModif, nodo1->posY(),			  nodo1->posZ());
-	if (input.keyDown(input.KEY_J)) nodo1->setPos(nodo1->posX() + PosModif, nodo1->posY(),			  nodo1->posZ());	
+	if (input.keyDown(input.KEY_UP))   teapot->setPos(teapot->posX() + ScaleModif, teapot->posY(), teapot->posZ());
+	if (input.keyDown(input.KEY_DOWN)) teapot->setPos(teapot->posX() - ScaleModif, teapot->posY(), teapot->posZ());
 
 
 
@@ -114,8 +118,16 @@ void Pacman::frame(Renderer& renderer, Input& input, Timer& timer){
 		nodo1->Check_bsp((*it), cam);
 	}
 
+	if (showWalls) {
+		std::vector<Mesh*>::iterator it2;
+		for (it2 = renderer.bsp_mesh.begin(); it2 != renderer.bsp_mesh.end(); it2++) {
+			(*it2)->canDraw = true;
+			(*it2)->draw(renderer, CollisionResult::AllInside, *frustum);
+		}
+	}
 
 	nodo1->draw(renderer, cam->frustum->CheckCollision(nodo1->BV), *frustum , _text);
+	nodo1->UpdateDrawValue();	
 
 	 std::string trianglesCount = "\nTotal Triangles: " + std::to_string(renderer.totalTriangles) + "\nCurrent Triangles: " 
 								  + std::to_string(renderer.currentTrianglesRenderer) + "\n";

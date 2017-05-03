@@ -140,7 +140,6 @@ void Node::UpdateDrawValue() {
 	}
 }
 void Node::Check_bsp(bsp_plane* plane, Camera* cam) {
-	UpdateDrawValue();
 	plane->bsp_DoBSP(*this, cam);
 	std::vector<Entity3D*>::iterator it;
 	for (it = _childs.begin(); it != _childs.end(); it++) {

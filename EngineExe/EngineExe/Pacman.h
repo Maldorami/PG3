@@ -16,5 +16,7 @@ private:
 	Mesh* teapot;
 
 	Text _text;
+
+	bool showWalls;
 };
 #endif
